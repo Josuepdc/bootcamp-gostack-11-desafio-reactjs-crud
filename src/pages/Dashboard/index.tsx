@@ -62,7 +62,7 @@ const Dashboard: React.FC = () => {
 
       const { data } = await api.put(`foods/${editingFood.id}`, updatedFood);
 
-      setFoods(foods.map(x => (x.id === editingFood.id ? data : x)));
+      setFoods(foods.map(x => (x.id === data.id ? data : x)));
     } catch (err) {
       console.log(err);
     }
@@ -72,6 +72,23 @@ const Dashboard: React.FC = () => {
     try {
       await api.delete(`foods/${id}`);
       setFoods(foods.filter(x => x.id !== id));
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async function handleToggleAvailableFood(food: IFoodPlate): Promise<void> {
+    try {
+      const updatedFoodAvailability = {
+        available: !food.available,
+      };
+
+      const { data } = await api.patch(
+        `foods/${food.id}`,
+        updatedFoodAvailability,
+      );
+
+      setFoods(foods.map(x => (x.id === data.id ? data : x)));
     } catch (err) {
       console.log(err);
     }
@@ -113,6 +130,7 @@ const Dashboard: React.FC = () => {
               food={food}
               handleDelete={handleDeleteFood}
               handleEditFood={handleEditFood}
+              handleToggleAvailableFood={handleToggleAvailableFood}
             />
           ))}
       </FoodsContainer>
